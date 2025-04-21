@@ -1,0 +1,72 @@
+@startuml
+
+' Interfaces
+interface FileSystem {
+    String ls(String path)
+    String cd(String path)
+    String touch(String name)
+    String mkdir(String name)
+    String rm(String name, boolean recursive)
+    String pwd()
+}
+
+interface Command {
+    String execute()
+}
+
+interface FileSystemElement {
+    String getName()
+    boolean isDirectory()
+}
+
+' Clases del file system
+class File {
+    - String name
+    - Directory parent
+}
+
+class Directory {
+    - String name
+    - Directory parent
+    - List<FileSystemElement> children
+}
+
+class InMemoryFileSystem
+
+' Comandos concretos
+class LsCommand {
+    - FileSystem fs
+    - String path
+    + String execute()
+}
+
+class CdCommand {
+    - FileSystem fs
+    - String path
+    + String execute()
+}
+
+class MkdirCommand {
+    - FileSystem fs
+    - String path
+    + String execute()
+}
+
+' Relaciones
+
+' Composite
+FileSystemElement <|.. File
+FileSystemElement <|.. Directory
+
+' Directory contiene otros elementos
+Directory --> "0..*" FileSystemElement : children
+
+' FileSystem
+FileSystem <|.. InMemoryFileSystem
+
+' Command
+Command <|.. LsCommand
+Command <|.. CdCommand
+Command <|.. MkdirCommand
+
+@enduml
